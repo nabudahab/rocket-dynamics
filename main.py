@@ -47,3 +47,37 @@ def write_images(dir, vid_fp):
         success, image = vidcap.read()
         #increment i
         i+=1
+
+#Usere optical character recognition to extract speed and altitude data from given directory and outputs it to a text file
+def extract_data(data_dir, out_file):
+    #loop through images in stage 1 speed folder
+    for im_path in os.listdir(f"{data_dir}/s1/speed"):
+        #read image from full path
+        im = cv2.imread(os.path.join(data_dir + "/s1/speed", im_path))
+
+        #convert image to greyscale for OCR
+        im_g = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+
+        #create threshold image to simplify things.
+        im_t = cv2.threshold(im_g, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV)[1]
+        im_r = cv2.resize(im_t, (0, 0), fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+
+        #define kernel size
+        rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20,20))
+
+        #Apply dilation to threshold image
+        im_d = cv2.dilate(im_r, rect_kernel, iterations = 1)
+
+        #Find countours
+        contours = cv2.findContours(im_d, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[0]
+
+        for cnt in contours:
+            x,y,w,h = cv2.boundingRect(cnt)
+            
+            #Draw rectang;e around contour
+            rect = cv2.rectangle(im, (x,y), (x+w, y+h), (0, 255, 0), 2)
+
+            #crop
+            im_c = im[y:y+h, x:x+w]
+
+            speed = pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits")
