@@ -1,5 +1,6 @@
 import cv2
-from os.path import exists
+import pytesseract
+import os
 
 #Asks user for video filepath and checks if file exists
 def get_video_fp():
@@ -7,7 +8,7 @@ def get_video_fp():
     video_fp = input("Video file path: ")
 
     #Check file exists, ask user again if it doesn't
-    if not exists(video_fp):
+    if not os.path.exists(video_fp):
         print("Filepath invalid.")
         get_video_fp()
     else:
