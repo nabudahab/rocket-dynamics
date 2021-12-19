@@ -26,9 +26,20 @@ def write_images(dir, vid_fp):
 
     #write frames to /frame directory
     while success and not image is None:
+        #Crop image to extract stage 1 speed
+        image_s1_speed = image[645:670, 75:145]
+
+        #Crop image to extract stage 1 altitude
+        image_s1_alt = image[645:670, 190:245]
+
         #Write image
-        s2 = cv2.imwrite(f"{dir}/frame{i}.jpg", image)
+        cv2.imwrite(f"{dir}/frame{i}.jpg", image)
+
+        #Write cropped images
+        cv2.imwrite(f"{dir}/s1/speed/frame{i}.jpg", image_s1_speed)
+        cv2.imwrite(f"{dir}/s1/alt/frame{i}.jpg", image_s1_alt)
+
         #go to next frame
-        succes, image = vidcap.read()
+        success, image = vidcap.read()
         #increment i
         i+=1
