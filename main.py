@@ -13,21 +13,22 @@ def get_video_fp():
     else:
         return video_fp
 
-        
-#Create OpenCV video capture object
-vidcap = cv2.VideoCapture(get_video_fp())
+#Separates the video at the given filepath into frames, exports each as a .jpg to the given directory
+def write_images(dir, vid_fp):
+    #Create OpenCV video capture object
+    vidcap = cv2.VideoCapture(vid_fp)
 
-#Read first frame from video
-success, image = vidcap.read()
+    #Read first frame from video
+    success, image = vidcap.read()
 
-#increment variable
-i=0
+    #increment variable
+    i=0
 
-#write frames to /frame directory
-while success and not image is None:
-    #Write image
-    s2 = cv2.imwrite(f"frames/frame{i}.jpg", image)
-    #go to next frame
-    succes, image = vidcap.read()
-    #increment i
-    i+=1
+    #write frames to /frame directory
+    while success and not image is None:
+        #Write image
+        s2 = cv2.imwrite(f"{dir}/frame{i}.jpg", image)
+        #go to next frame
+        succes, image = vidcap.read()
+        #increment i
+        i+=1
