@@ -51,9 +51,9 @@ def write_images(dir, vid_fp):
 #Usere optical character recognition to extract speed and altitude data from given directory and outputs it to a text file
 def extract_data(data_dir, out_file):
     #loop through images in stage 1 speed folder
-    for im_path in os.listdir(f"{data_dir}/s1/speed"):
+    for im_path in os.listdir(f"{data_dir}"):
         #read image from full path
-        im = cv2.imread(os.path.join(data_dir + "/s1/speed", im_path))
+        im = cv2.imread(os.path.join(data_dir, im_path))
 
         #convert image to greyscale for OCR
         im_g = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
