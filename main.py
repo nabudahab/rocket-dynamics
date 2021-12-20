@@ -50,7 +50,7 @@ def write_images(dir, vid_fp):
 
 #Usere optical character recognition to extract speed and altitude data from given directory and outputs it to a text file
 def extract_data(data_dir, out_file):
-    data_arr = []
+    data = []
     #loop through images in stage 1 speed folder
     for im_path in os.listdir(f"{data_dir}"):
         #read image from full path
@@ -81,6 +81,5 @@ def extract_data(data_dir, out_file):
             #crop
             im_c = im[y:y+h, x:x+w]
 
-            data_arr.append(pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits"))
-    
-    return data_arr()
+            data.append(pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits"))
+    return data
