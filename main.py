@@ -34,7 +34,7 @@ def write_images(dir, vid_fp):
         image_s1_speed = image[640:680, 65:155]
 
         #Crop image to extract stage 1 altitude
-        image_s1_alt = image[640:680, 185:255]
+        image_s1_alt = image[640:680, 180:260]
 
         #Write image
         cv2.imwrite(f"{dir}/frame{i}.jpg", image)
@@ -80,4 +80,4 @@ def extract_data(data_dir, out_file):
             #crop
             im_c = im[y:y+h, x:x+w]
 
-            speed = pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits")
+            data = pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits")
