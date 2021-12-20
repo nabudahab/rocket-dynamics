@@ -22,26 +22,31 @@ def write_images(dir, vid_fp):
     #Create OpenCV video capture object
     vidcap = cv2.VideoCapture(vid_fp)
 
+    #Get framerate
+    fr = vidcap.get(5)
+    print(vidcap.get(5))
+
     #Read first frame from video
     success, image = vidcap.read()
 
     #increment variable
     i=0
 
-    #write frames to /frame directory
+    #Check if frame is in new second and write to given directory
     while success and not image is None:
-        #Crop image to extract stage 1 speed
-        image_s1_speed = image[640:680, 65:155]
+        if(vidcap.get(1) % fr == 0):
+            #Crop image to extract stage 1 speed
+            image_s1_speed = image[640:680, 65:155]
 
-        #Crop image to extract stage 1 altitude
-        image_s1_alt = image[640:680, 180:260]
+            #Crop image to extract stage 1 altitude
+            image_s1_alt = image[640:680, 180:260]
 
-        #Write image
-        cv2.imwrite(f"{dir}/frame{i}.jpg", image)
+            #Write image
+            cv2.imwrite(f"{dir}/frame{i}.jpg", image)
 
-        #Write cropped images
-        cv2.imwrite(f"{dir}/s1/speed/frame{i}.jpg", image_s1_speed)
-        cv2.imwrite(f"{dir}/s1/alt/frame{i}.jpg", image_s1_alt)
+            #Write cropped images
+            cv2.imwrite(f"{dir}/s1/speed/frame{i}.jpg", image_s1_speed)
+            cv2.imwrite(f"{dir}/s1/alt/frame{i}.jpg", image_s1_alt)
 
         #go to next frame
         success, image = vidcap.read()
