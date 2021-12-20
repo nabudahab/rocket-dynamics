@@ -24,7 +24,6 @@ def write_images(dir, vid_fp):
 
     #Get framerate
     fr = vidcap.get(5)
-    print(vidcap.get(5))
 
     #Read first frame from video
     success, image = vidcap.read()
