@@ -49,7 +49,7 @@ def write_images(dir, vid_fp):
         i+=1
 
 #Usere optical character recognition to extract speed and altitude data from given directory and outputs it to a text file
-def extract_data(data_dir, out_file):
+def extract_data(data_dir):
     data = []
     #loop through images in stage 1 speed folder
     for im_path in os.listdir(f"{data_dir}"):
