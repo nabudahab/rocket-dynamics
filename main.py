@@ -17,7 +17,7 @@ def get_video_fp():
     else:
         return video_fp
 
-#Separates the video at the given filepath into frames, exports each as a .jpg to the given directory
+#Takes one frame from each second within the video at the video filepath and exports to given dir
 def write_images(dir, vid_fp):
     #Create OpenCV video capture object
     vidcap = cv2.VideoCapture(vid_fp)
@@ -81,5 +81,7 @@ def extract_data(data_dir):
             #crop
             im_c = im[y:y+h, x:x+w]
 
-            data.append(pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits"))
+            data_point = pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits")
+
+            data.append(data_point)
     return data
