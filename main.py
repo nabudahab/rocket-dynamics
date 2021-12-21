@@ -56,7 +56,6 @@ def write_images(dir, vid_fp):
 #Usere optical character recognition to extract speed and altitude data from given directory and outputs it to a text file
 def extract_data(data_dir):
     data = {}
-    print(len(os.listdir(data_dir)))
     #loop through images in the given data directory
     for im_path in os.listdir(data_dir):
         #read image from full path
@@ -97,29 +96,6 @@ def extract_data(data_dir):
     dataset = [0] * len(data)
 
     #Sort data dictionary into the dataset array correctly
-    print(len(data))
-    print(len(dataset))
-    print(len(os.listdir(data_dir)))
     for i in range(0, len(data)):
         dataset[i] = data[i+1]
     return dataset
-
-write_images("frames", "5b.mp4")
-
-f = open("data.txt", "w")
-
-dataset = extract_data("frames/s1/speed")
-
-i = 1
-
-for entry in dataset:
-    digit = "".join(filter(str.isdigit, entry))
-    if digit == '':
-        f.write(f"{i} : 0")
-    else:
-        f.write(f"{i} : {digit}")
-    
-    f.write('\12')
-    i+=1
-
-f.close()
