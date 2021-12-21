@@ -1,6 +1,7 @@
 import cv2
 import pytesseract
 import os
+import math
 
 #set tesseract path
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -41,11 +42,11 @@ def write_images(dir, vid_fp):
             image_s1_alt = image[640:680, 180:260]
 
             #Write image
-            cv2.imwrite(f"{dir}/frame{i}.jpg", image)
+            cv2.imwrite(f"{dir}/frame{math.ceil(i/fr)}.jpg", image)
 
             #Write cropped images
-            cv2.imwrite(f"{dir}/s1/speed/frame{i}.jpg", image_s1_speed)
-            cv2.imwrite(f"{dir}/s1/alt/frame{i}.jpg", image_s1_alt)
+            cv2.imwrite(f"{dir}/s1/speed/frame{math.ceil(i/fr)}.jpg", image_s1_speed)
+            cv2.imwrite(f"{dir}/s1/alt/frame{math.ceil(i/fr)}.jpg", image_s1_alt)
 
         #go to next frame
         success, image = vidcap.read()
@@ -54,9 +55,10 @@ def write_images(dir, vid_fp):
 
 #Usere optical character recognition to extract speed and altitude data from given directory and outputs it to a text file
 def extract_data(data_dir):
-    data = []
-    #loop through images in stage 1 speed folder
-    for im_path in os.listdir(f"{data_dir}"):
+    data = {}
+    print(len(os.listdir(data_dir)))
+    #loop through images in the given data directory
+    for im_path in os.listdir(data_dir):
         #read image from full path
         im = cv2.imread(os.path.join(data_dir, im_path))
 
@@ -85,7 +87,39 @@ def extract_data(data_dir):
             #crop
             im_c = im[y:y+h, x:x+w]
 
+            #Get data point
             data_point = pytesseract.image_to_string(im_c, config = "--psm 7 outputbase digits")
 
-            data.append(data_point)
-    return data
+            #Relate data point to it's frame number as an integer so we can use it to propely order the dataset
+            data[int(im_path[im_path.find("e")+1:im_path.find('.')])] = data_point
+    
+    #Create dataset array
+    dataset = [0] * len(data)
+
+    #Sort data dictionary into the dataset array correctly
+    print(len(data))
+    print(len(dataset))
+    print(len(os.listdir(data_dir)))
+    for i in range(0, len(data)):
+        dataset[i] = data[i+1]
+    return dataset
+
+write_images("frames", "5b.mp4")
+
+f = open("data.txt", "w")
+
+dataset = extract_data("frames/s1/speed")
+
+i = 1
+
+for entry in dataset:
+    digit = "".join(filter(str.isdigit, entry))
+    if digit == '':
+        f.write(f"{i} : 0")
+    else:
+        f.write(f"{i} : {digit}")
+    
+    f.write('\12')
+    i+=1
+
+f.close()
