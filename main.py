@@ -79,9 +79,6 @@ def extract_data(data_dir):
 
         for cnt in contours:
             x,y,w,h = cv2.boundingRect(cnt)
-            
-            #Draw rectangle around contour
-            rect = cv2.rectangle(im, (x,y), (x+w, y+h), (0, 255, 0), 2)
 
             #crop
             im_c = im[y:y+h, x:x+w]
