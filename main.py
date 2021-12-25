@@ -1,7 +1,8 @@
 import cv2
 import pytesseract
-import os
+from os import makedirs, listdir, path
 import math
+from shutil import rmtree
 
 #set tesseract path
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -12,7 +13,7 @@ def get_video_fp():
     video_fp = input("Video file path: ")
 
     #Check file exists, ask user again if it doesn't
-    if not os.path.exists(video_fp):
+    if not path.exists(video_fp):
         print("Filepath invalid.")
         get_video_fp()
     else:
@@ -20,6 +21,17 @@ def get_video_fp():
 
 #Takes one frame from each second within the video at the video filepath and exports to given dir
 def write_images(dir, vid_fp):
+    #Check if the directory already exist, if it does, delete it
+    if(path.exists(dir)):
+        rmtree(dir)
+
+    #Create the directory and all necessary subfolders
+    makedirs(dir)
+    makedirs(dir + r"\s1\speed")    
+    makedirs(dir + r"\s1\alt")
+    makedirs(dir + r"\s2\speed")
+    makedirs(dir + r"\s2\alt")
+
     #Create OpenCV video capture object
     vidcap = cv2.VideoCapture(vid_fp)
 
@@ -57,9 +69,9 @@ def write_images(dir, vid_fp):
 def extract_data(data_dir):
     data = {}
     #loop through images in the given data directory
-    for im_path in os.listdir(data_dir):
+    for im_path in listdir(data_dir):
         #read image from full path
-        im = cv2.imread(os.path.join(data_dir, im_path))
+        im = cv2.imread(path.join(data_dir, im_path))
 
         #convert image to greyscale for OCR
         im_g = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
